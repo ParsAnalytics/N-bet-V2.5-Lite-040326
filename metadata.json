@@ -1,0 +1,8 @@
+{
+  "name": "Nöbet 03 03 26",
+  "short_name": "Nöbet",
+  "description": "Adli nöbet işlemlerini kolaylaştıran, yapay zeka destekli karar ve bilgi notu hazırlama aracı.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
