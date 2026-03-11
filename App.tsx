@@ -66,18 +66,26 @@ const App: React.FC = () => {
       .replace(/İ/g, 'I').replace(/ı/g, 'i')
       .replace(/Ö/g, 'O').replace(/ö/g, 'o')
       .replace(/Ç/g, 'C').replace(/ç/g, 'c')
-      .replace(/\s+/g, '_') // Boşlukları alt çizgi yap
+      .replace(/[\s\-_]+/g, '_') // Boşluk, tire ve alt çizgileri tek bir alt çizgiye indir
       .replace(/[^a-zA-Z0-9_]/g, '') // Alfanumerik olmayanları sil
-      .substring(0, 50); // Çok uzun olmasın
+      .replace(/__+/g, '_') // Çift alt çizgileri teke indir
+      .replace(/^_|_$/g, ''); // Başındaki ve sonundaki alt çizgileri sil
   };
 
   const parseFilename = (filename: string): TrackingItem | null => {
     // Format: NOBETV2__TUR__SUPHELI__SUC__KARAKOL__TARIH__ID.jpg
     // Arama için: NOBETV2__ARAMA__SUPHELI__SUC__KARAKOL__TARIH__ADRES__SAAT__ID.jpg
-    if (!filename.startsWith('NOBETV2__')) return null;
+    
+    // Bazı mobil tarayıcılar dosya isminin başına karakter ekleyebilir veya sonuna (1) gibi ekler yapabilir
+    if (!filename.includes('NOBETV2__')) return null;
 
     try {
-      const parts = filename.replace(/\.[^/.]+$/, "").split('__');
+      // NOBETV2__ ile başlayan kısmı al
+      const cleanName = filename.substring(filename.indexOf('NOBETV2__'));
+      // Uzantıyı ve parantezli ekleri temizle (örn: .jpg, (1).jpg)
+      const nameWithoutExt = cleanName.split('.')[0].replace(/\s*\(\d+\)$/, "");
+      const parts = nameWithoutExt.split('__');
+      
       if (parts.length < 6) return null;
 
       const typeCode = parts[1];
@@ -90,16 +98,20 @@ const App: React.FC = () => {
       const supheli = parts[2].replace(/_/g, ' ');
       const suc = parts[3].replace(/_/g, ' ');
       const karakol = parts[4].replace(/_/g, ' ');
-      const tarih = parts[5].replace(/_/g, ' ');
+      let tarih = parts[5].replace(/_/g, ' ');
+
+      // Eğer tarih DDMMYYYY formatındaysa (8 karakter rakam), DD.MM.YYYY formatına çevir
+      if (tarih.length === 8 && /^\d+$/.test(tarih)) {
+        tarih = `${tarih.substring(0, 2)}.${tarih.substring(2, 4)}.${tarih.substring(4, 8)}`;
+      }
 
       let aranilacakAdres = '';
       let aramaBaslangicSaati = '';
       let aramaBitisSaati = '';
 
       // Arama kararı ise ve ekstra parçalar varsa (Adres ve Saat)
+      // Yeni formatta: NOBETV2(0)__ARAMA(1)__SUP(2)__SUC(3)__KAR(4)__TAR(5)__ADRES(6)__SAAT(7)__ID(8)
       if (typeCode === 'ARAMA' && parts.length >= 8) {
-        // parts[6] = ADRES
-        // parts[7] = SAAT (HHMM_HHMM formatında bekleniyor)
         aranilacakAdres = parts[6].replace(/_/g, ' ');
         
         const timePart = parts[7];
@@ -436,6 +448,22 @@ const App: React.FC = () => {
     ));
   };
 
+  const addKararToTrackingList = (k: KararData) => {
+    const item: TrackingItem = {
+      id: `track-manual-${Date.now()}-${Math.random()}`,
+      type: k.type,
+      supheliAdKimlik: k.formData.supheliAdKimlik,
+      sucAdi: k.formData.sucAdi,
+      karakol: k.formData.karakol,
+      gozaltiTarihSaat: formatDateTR(k.formData.kararTarihi),
+      aranilacakAdres: k.formData.aranilacakAdres,
+      aramaBaslangicSaati: k.formData.aramaBaslangicSaati,
+      aramaBitisSaati: k.formData.aramaBitisSaati
+    };
+    setTrackingList(prev => [item, ...prev]);
+    alert("Karar takip listesine başarıyla eklendi.");
+  };
+
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
@@ -492,18 +520,28 @@ const App: React.FC = () => {
       const fnStation = sanitizeForFilename(k.formData.karakol);
       const fnDate = sanitizeForFilename(formatDateTR(k.formData.kararTarihi));
 
-      let extraInfo = '';
+      const filenameParts = [
+        'NOBETV2',
+        typeCode,
+        fnSuspect,
+        fnCrime,
+        fnStation,
+        fnDate
+      ];
+
       if (typeCode === 'ARAMA') {
-        // Adres içinde çift alt çizgi varsa tek'e indir, çünkü __ ayırıcı olarak kullanılıyor
-        const fnAdres = sanitizeForFilename(k.formData.aranilacakAdres || '').replace(/__+/g, '_');
-        // Saatleri HHMM formatına çevir (sanitizeForFilename zaten : karakterini siliyor)
+        const fnAdres = sanitizeForFilename(k.formData.aranilacakAdres || '');
         const start = (k.formData.aramaBaslangicSaati || '').replace(':', '');
         const end = (k.formData.aramaBitisSaati || '').replace(':', '');
         const fnSaat = `${start}_${end}`;
-        extraInfo = `__${fnAdres}__${fnSaat}`;
+        filenameParts.push(fnAdres);
+        filenameParts.push(fnSaat);
       }
 
-      const smartFilename = `NOBETV2__${typeCode}__${fnSuspect}__${fnCrime}__${fnStation}__${fnDate}${extraInfo}__${k.id.substring(0,8)}.jpg`;
+      // ID'yi sona ekle
+      filenameParts.push(k.id.substring(0, 8));
+
+      const smartFilename = filenameParts.join('__') + '.jpg';
 
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
       if (isIOS) {
@@ -900,6 +938,9 @@ const App: React.FC = () => {
                         <button onClick={() => downloadAsImage(k.id, `karar-view-${k.id}`)} className="flex-1 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-xs font-black flex items-center justify-center gap-2 shadow-lg uppercase tracking-widest transition-all">
                           <Download size={18} /> Görüntü Olarak İndir
                         </button>
+                        <button onClick={() => addKararToTrackingList(k)} className="flex-1 py-4 bg-green-600 hover:bg-green-700 text-white rounded-2xl text-xs font-black flex items-center justify-center gap-2 shadow-lg uppercase tracking-widest transition-all">
+                          <Plus size={18} /> Listeye Ekle
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -916,11 +957,27 @@ const App: React.FC = () => {
                 <input type="file" multiple accept="image/*" onChange={handleFileChange} className="absolute inset-0 opacity-0 cursor-pointer z-10" />
                 <div className="flex flex-col items-center gap-4">
                   <div className="flex items-center gap-3 text-blue-600"> <Camera size={48} /> <span className="text-3xl font-black text-gray-300">|</span> <FileText size={48} /> </div>
-                  <div> <p className="text-lg font-black text-blue-900 uppercase tracking-widest">Belge Yükle</p> <p className="text-xs text-blue-600 font-bold mt-2 uppercase">Kaydedilen kararların resimlerini (Dosya İsimli) yükleyerek listeye ekleyin.</p> </div>
+                  <div> <p className="text-lg font-black text-blue-900 uppercase tracking-widest">Belge Yükle</p> <p className="text-xs text-blue-600 font-bold mt-2 uppercase">Kaydedilen kararların resimlerini (Dosya İsimli) yükleyerek listeye ekleyin.</p> <p className="text-[10px] text-red-500 font-bold mt-1 uppercase">iPhone kullanıcıları "Listeye Ekle" butonunu kullanabilir.</p> </div>
                 </div>
               </div>
 
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-4">
+                <button 
+                  onClick={() => {
+                    const item: TrackingItem = {
+                      id: `track-manual-${Date.now()}`,
+                      type: 'Gözaltı Kararı',
+                      supheliAdKimlik: '',
+                      sucAdi: '',
+                      karakol: '',
+                      gozaltiTarihSaat: formatDateTR(new Date().toISOString().split('T')[0])
+                    };
+                    setTrackingList(prev => [item, ...prev]);
+                  }}
+                  className="flex-1 py-4 bg-green-600 hover:bg-green-700 text-white font-black rounded-2xl text-xs flex items-center justify-center gap-2 shadow-xl uppercase tracking-widest transition-all"
+                >
+                  <Plus size={20} /> Manuel Kayıt Ekle
+                </button>
                 <button 
                   onClick={downloadArchivePdf}
                   className="flex-1 py-4 bg-orange-600 hover:bg-orange-700 text-white font-black rounded-2xl text-xs flex items-center justify-center gap-2 shadow-xl uppercase tracking-widest transition-all"
