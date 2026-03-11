@@ -76,14 +76,29 @@ const App: React.FC = () => {
     // Format: NOBETV2__TUR__SUPHELI__SUC__KARAKOL__TARIH__ID.jpg
     // Arama için: NOBETV2__ARAMA__SUPHELI__SUC__KARAKOL__TARIH__ADRES__SAAT__ID.jpg
     
-    // Bazı mobil tarayıcılar dosya isminin başına karakter ekleyebilir veya sonuna (1) gibi ekler yapabilir
-    if (!filename.includes('NOBETV2__')) return null;
+    let decodedName = filename;
+    try {
+      // URL encode edilmiş dosya isimlerini çöz (örn: %20, %5F vb.)
+      decodedName = decodeURIComponent(filename);
+    } catch (e) {}
+
+    const tag = 'NOBETV2__';
+    const upperName = decodedName.toUpperCase();
+    
+    // Etiketi dosya isminin herhangi bir yerinde ara (başında rastgele karakterler olabilir)
+    if (!upperName.includes(tag)) return null;
 
     try {
-      // NOBETV2__ ile başlayan kısmı al
-      const cleanName = filename.substring(filename.indexOf('NOBETV2__'));
-      // Uzantıyı ve parantezli ekleri temizle (örn: .jpg, (1).jpg)
-      const nameWithoutExt = cleanName.split('.')[0].replace(/\s*\(\d+\)$/, "");
+      // Etiketin başladığı konumu bul ve sonrasını al
+      const startIndex = upperName.indexOf(tag);
+      const cleanName = decodedName.substring(startIndex);
+      
+      // Uzantıyı ve parantezli ekleri temizle (örn: .jpg, (1).jpg, .png (1) vb.)
+      // Önce bilinen uzantıları ve sonrasını atalım
+      let nameWithoutExt = cleanName.replace(/\.(jpg|jpeg|png|heic|pdf|webp).*/i, "");
+      // Sonra parantezli sayıları temizleyelim (örn: "dosya (1)")
+      nameWithoutExt = nameWithoutExt.replace(/\s*\(\d+\)$/, "").trim();
+      
       const parts = nameWithoutExt.split('__');
       
       if (parts.length < 6) return null;
@@ -543,14 +558,35 @@ const App: React.FC = () => {
 
       const smartFilename = filenameParts.join('__') + '.jpg';
 
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-      if (isIOS) {
-        setIosPreview({ url: img, filename: smartFilename });
-      } else {
+      try {
+        // Convert DataURL to Blob for better iOS support
+        const base64Response = await fetch(img);
+        const blob = await base64Response.blob();
+        const blobUrl = URL.createObjectURL(new Blob([blob], { type: 'application/octet-stream' }));
+
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = smartFilename;
+        document.body.appendChild(link);
+        link.click();
+        
+        // Cleanup
+        setTimeout(() => {
+          document.body.removeChild(link);
+          URL.revokeObjectURL(blobUrl);
+        }, 100);
+      } catch (err) {
+        // Fallback to simple link if blob fails
         const link = document.createElement('a');
         link.href = img;
         link.download = smartFilename;
         link.click();
+      }
+      
+      // Fallback for iOS visual confirmation
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      if (isIOS) {
+        setIosPreview({ url: img, filename: smartFilename });
       }
     } catch (e) {
       alert("Görüntü oluşturulurken hata oluştu.");
@@ -591,10 +627,29 @@ const App: React.FC = () => {
       });
       
       const img = canvas.toDataURL('image/jpeg', 0.95);
-      const link = document.createElement('a');
-      link.href = img;
-      link.download = `Gozalti_Listesi_${new Date().toISOString().slice(0,10)}.jpg`;
-      link.click();
+      const filename = `Gozalti_Listesi_${new Date().toISOString().slice(0,10)}.jpg`;
+
+      try {
+        const base64Response = await fetch(img);
+        const blob = await base64Response.blob();
+        const blobUrl = URL.createObjectURL(new Blob([blob], { type: 'application/octet-stream' }));
+
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        
+        setTimeout(() => {
+          document.body.removeChild(link);
+          URL.revokeObjectURL(blobUrl);
+        }, 100);
+      } catch (err) {
+        const link = document.createElement('a');
+        link.href = img;
+        link.download = filename;
+        link.click();
+      }
 
       // Restore inner table container style
       if (tableContainer) {
@@ -957,27 +1012,11 @@ const App: React.FC = () => {
                 <input type="file" multiple accept="image/*" onChange={handleFileChange} className="absolute inset-0 opacity-0 cursor-pointer z-10" />
                 <div className="flex flex-col items-center gap-4">
                   <div className="flex items-center gap-3 text-blue-600"> <Camera size={48} /> <span className="text-3xl font-black text-gray-300">|</span> <FileText size={48} /> </div>
-                  <div> <p className="text-lg font-black text-blue-900 uppercase tracking-widest">Belge Yükle</p> <p className="text-xs text-blue-600 font-bold mt-2 uppercase">Kaydedilen kararların resimlerini (Dosya İsimli) yükleyerek listeye ekleyin.</p> <p className="text-[10px] text-red-500 font-bold mt-1 uppercase">iPhone kullanıcıları "Listeye Ekle" butonunu kullanabilir.</p> </div>
+                  <div> <p className="text-lg font-black text-blue-900 uppercase tracking-widest">Belge Yükle</p> <p className="text-xs text-blue-600 font-bold mt-2 uppercase">Kaydedilen kararların resimlerini (Dosya İsimli) yükleyerek listeye ekleyin.</p> </div>
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4">
-                <button 
-                  onClick={() => {
-                    const item: TrackingItem = {
-                      id: `track-manual-${Date.now()}`,
-                      type: 'Gözaltı Kararı',
-                      supheliAdKimlik: '',
-                      sucAdi: '',
-                      karakol: '',
-                      gozaltiTarihSaat: formatDateTR(new Date().toISOString().split('T')[0])
-                    };
-                    setTrackingList(prev => [item, ...prev]);
-                  }}
-                  className="flex-1 py-4 bg-green-600 hover:bg-green-700 text-white font-black rounded-2xl text-xs flex items-center justify-center gap-2 shadow-xl uppercase tracking-widest transition-all"
-                >
-                  <Plus size={20} /> Manuel Kayıt Ekle
-                </button>
+              <div className="flex gap-4">
                 <button 
                   onClick={downloadArchivePdf}
                   className="flex-1 py-4 bg-orange-600 hover:bg-orange-700 text-white font-black rounded-2xl text-xs flex items-center justify-center gap-2 shadow-xl uppercase tracking-widest transition-all"
@@ -1197,10 +1236,13 @@ const App: React.FC = () => {
             </div>
 
             <div className="text-center p-6 bg-blue-600 rounded-[30px] border-4 border-blue-400 shadow-xl">
-              <AlertCircle className="mx-auto mb-3 text-white" size={32} />
-              <p className="text-base font-black text-white mb-2 uppercase tracking-widest">Fotoğraflara Kaydet</p>
+              <Download className="mx-auto mb-3 text-white" size={32} />
+              <p className="text-base font-black text-white mb-2 uppercase tracking-widest">Dosyayı İndirilenlerde Ara</p>
               <p className="text-[11px] text-blue-100 font-bold uppercase leading-relaxed">
-                Belgeyi kaydederken dosya ismini <u>DEĞİŞTİRMEMEYE</u> özen gösterin. Sistem bu ismi okuyarak listeye ekler.
+                Dosya otomatik olarak "Dosyalar" uygulamasındaki <u>İndirilenler</u> klasörüne kaydedilmiştir. Oradaki dosya ismi korunur.
+              </p>
+              <p className="text-[10px] text-white/80 font-bold uppercase mt-3">
+                Eğer otomatik inmezse resme basılı tutup "Dosyalara Kaydet" diyebilirsiniz.
               </p>
             </div>
           </div>
