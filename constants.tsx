@@ -174,9 +174,8 @@ export function formatSupheliText(t: string) {
 
 export function formatSucAdi(t: string) {
   if (!t) return '';
-  // Tire, slash, virgül, noktalı virgül veya " ve " bağlacı ile ayır
-  // Ancak parantez içindeki tireleri korumak isteyebiliriz, şimdilik basit tutalım
-  return t.split(/[-/,;]|\s+ve\s+/).map(l => l.trim()).filter(l => l !== '').join('\n');
+  // Virgül, noktalı virgül, slash veya yeni satır ile ayır
+  return t.split(/[,;\/\n]/).map(l => l.trim()).filter(l => l !== '').join('\n');
 }
 
 export function populateTemplate(temp: string, d: any, sig?: string) {
