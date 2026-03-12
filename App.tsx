@@ -14,7 +14,8 @@ import {
   Users,
   FileArchive,
   Globe,
-  Plus
+  Plus,
+  Share2
 } from 'lucide-react';
 import { PageType, KararData, TrackingItem, DecisionFormData, Stroke, Point } from './types';
 import { 
@@ -559,10 +560,20 @@ const App: React.FC = () => {
       const smartFilename = filenameParts.join('__') + '.jpg';
 
       try {
-        // Convert DataURL to Blob for better iOS support
-        const base64Response = await fetch(img);
-        const blob = await base64Response.blob();
-        const blobUrl = URL.createObjectURL(new Blob([blob], { type: 'application/octet-stream' }));
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        const arr = img.split(',');
+        const mime = arr[0].match(/:(.*?);/)[1];
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while(n--){
+          u8arr[n] = bstr.charCodeAt(n);
+        }
+        
+        // Android'de normal resim olarak, iOS'te ise doğrudan Dosyalar'a inmesi için mime type ayarlaması.
+        const finalMime = isIOS ? 'application/octet-stream' : mime;
+        const blob = new Blob([u8arr], {type: finalMime});
+        const blobUrl = URL.createObjectURL(blob);
 
         const link = document.createElement('a');
         link.href = blobUrl;
@@ -581,12 +592,6 @@ const App: React.FC = () => {
         link.href = img;
         link.download = smartFilename;
         link.click();
-      }
-      
-      // Fallback for iOS visual confirmation
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-      if (isIOS) {
-        setIosPreview({ url: img, filename: smartFilename });
       }
     } catch (e) {
       alert("Görüntü oluşturulurken hata oluştu.");
@@ -993,9 +998,7 @@ const App: React.FC = () => {
                         <button onClick={() => downloadAsImage(k.id, `karar-view-${k.id}`)} className="flex-1 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-xs font-black flex items-center justify-center gap-2 shadow-lg uppercase tracking-widest transition-all">
                           <Download size={18} /> Görüntü Olarak İndir
                         </button>
-                        <button onClick={() => addKararToTrackingList(k)} className="flex-1 py-4 bg-green-600 hover:bg-green-700 text-white rounded-2xl text-xs font-black flex items-center justify-center gap-2 shadow-lg uppercase tracking-widest transition-all">
-                          <Plus size={18} /> Listeye Ekle
-                        </button>
+
                       </div>
                     </div>
                   ))}
@@ -1226,25 +1229,56 @@ const App: React.FC = () => {
               <h3 className="font-black text-gray-900 text-xl uppercase tracking-widest">Belge Hazırlandı</h3>
               <button onClick={() => setIosPreview(null)} className="p-3 bg-gray-100 hover:bg-gray-200 text-gray-500 rounded-full transition-all">✕</button>
             </div>
-            <div className="flex-grow overflow-auto flex items-center justify-center bg-gray-50 rounded-[30px] mb-6 p-4 border-2 border-gray-100">
-              <img src={iosPreview.url} className="max-w-full h-auto shadow-2xl border-4 border-white rounded-lg" alt="Karar Önizleme" />
+            <div className="flex-grow overflow-auto flex items-center justify-center bg-gray-50 rounded-[30px] mb-6 p-4 border-2 border-gray-100 relative">
+              <img src={iosPreview.url} className="max-w-full h-auto shadow-2xl border-4 border-white rounded-lg pointer-events-auto" alt="Karar Önizleme" />
             </div>
             
             <div className="text-center p-4 mb-4 bg-gray-100 rounded-2xl border border-gray-200">
-              <p className="text-[10px] text-gray-500 font-bold uppercase mb-1">Dosya Adı (Önemli)</p>
+              <p className="text-[10px] text-gray-500 font-bold uppercase mb-1">Dosya Adı</p>
               <code className="text-[10px] text-blue-600 font-mono break-all">{iosPreview.filename}</code>
             </div>
 
-            <div className="text-center p-6 bg-blue-600 rounded-[30px] border-4 border-blue-400 shadow-xl">
-              <Download className="mx-auto mb-3 text-white" size={32} />
-              <p className="text-base font-black text-white mb-2 uppercase tracking-widest">Dosyayı İndirilenlerde Ara</p>
-              <p className="text-[11px] text-blue-100 font-bold uppercase leading-relaxed">
-                Dosya otomatik olarak "Dosyalar" uygulamasındaki <u>İndirilenler</u> klasörüne kaydedilmiştir. Oradaki dosya ismi korunur.
-              </p>
-              <p className="text-[10px] text-white/80 font-bold uppercase mt-3">
-                Eğer otomatik inmezse resme basılı tutup "Dosyalara Kaydet" diyebilirsiniz.
-              </p>
-            </div>
+            <button 
+              onClick={async () => {
+                try {
+                  // Synchronous base64 to blob to preserve user gesture on iOS Safari
+                  const arr = iosPreview.url.split(',');
+                  const mime = arr[0].match(/:(.*?);/)[1];
+                  const bstr = atob(arr[1]);
+                  let n = bstr.length;
+                  const u8arr = new Uint8Array(n);
+                  while(n--){
+                    u8arr[n] = bstr.charCodeAt(n);
+                  }
+                  const blob = new Blob([u8arr], {type:mime});
+                  const file = new File([blob], iosPreview.filename, { type: 'image/jpeg' });
+                  
+                  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({ files: [file], title: iosPreview.filename });
+                  } else {
+                    const link = document.createElement('a');
+                    link.href = iosPreview.url;
+                    link.download = iosPreview.filename;
+                    link.click();
+                  }
+                } catch(e) {
+                   console.error("Share failed", e);
+                   alert("Paylaşım başarısız oldu. Lütfen resme basılı tutarak kaydedin.");
+                }
+              }}
+              className="w-full text-center p-5 bg-blue-600 rounded-[30px] hover:bg-blue-700 active:scale-95 transition-all outline-none border-4 border-blue-400 shadow-xl flex flex-col items-center justify-center cursor-pointer mb-3"
+            >
+              <div className="flex items-center gap-3 mb-2 text-white">
+                <Share2 size={24} />
+                <Download size={24} />
+              </div>
+              <p className="text-base font-black text-white uppercase tracking-widest leading-none">Kaydet / Paylaş</p>
+              <p className="text-[10px] text-blue-100 font-bold uppercase mt-2">Daha Hızlı İndirmek İçin Tıklayın</p>
+            </button>
+
+            <p className="text-[9px] text-center text-gray-400 font-bold uppercase mt-1 px-4 leading-relaxed">
+              * Buton çalışmazsa doğrudan resmin üzerine basılı tutup "Fotoğraflara Kaydet" veya "Dosyalara Kaydet" diyebilirsiniz.
+            </p>
           </div>
         </div>
       )}
