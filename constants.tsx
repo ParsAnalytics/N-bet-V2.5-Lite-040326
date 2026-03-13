@@ -147,13 +147,19 @@ export function formatDateTR(d: string) {
 export function formatSupheliText(t: string) {
   if (!t) return '';
   return t.split('\n').map(l => {
-    const m = l.match(/\b\d{11}\b/);
-    const tc = m ? m[0] : '';
+    const isYabanci = l.toUpperCase().includes('YABANCI') || l.toUpperCase().includes('PASAPORT');
+    const m = l.match(/\b\d+\b/g); 
+    let tc = '';
+    if (m) tc = m.find(x => x.length === 11) || m[0]; // grab 11 digit first, else any number
     
-    let n = l.replace(/\b\d{11}\b/, '')
+    let n = l.replace(tc, '')
              .replace(/TC:?/i, '')
              .replace(/T\.C\.?/i, '')
              .replace(/kimlik no:?/i, '')
+             .replace(/PASAPORT NO\/YBKN:?/i, '')
+             .replace(/\(YABANCI\)/i, '')
+             .replace(/Uyruklu/i, '')
+             .replace(/Yabancı/i, '')
              .replace(/[-:()]/g, ' ')
              .replace(/\s+/g, ' ')
              .trim();
@@ -162,11 +168,11 @@ export function formatSupheliText(t: string) {
     n = trUpperCase(n);
     
     if (n && tc) {
-      return `"${n}" (TC:${tc})`;
+      return isYabanci ? `"${n}" PASAPORT NO/YBKN: ${tc}` : `"${n}" (TC:${tc})`;
     } else if (n) {
-      return `"${n}"`;
+      return isYabanci ? `"${n}" PASAPORT NO/YBKN: ` : `"${n}"`;
     } else if (tc) {
-      return `(TC:${tc})`;
+      return isYabanci ? `PASAPORT NO/YBKN: ${tc}` : `(TC:${tc})`;
     }
     return '';
   }).filter(l => l.trim() !== '').join('\n');
@@ -174,23 +180,36 @@ export function formatSupheliText(t: string) {
 
 export function formatSucAdi(t: string) {
   if (!t) return '';
-  // Virgül, noktalı virgül, slash veya yeni satır ile ayır
-  return t.split(/[,;\/\n]/).map(l => l.trim()).filter(l => l !== '').join('\n');
+  return t.split(/[,;\/\n]/).map(l => {
+    let clean = l.trim();
+    if (!clean) return '';
+    clean = trUpperCase(clean);
+    
+    if (clean.includes('191') || (clean.includes('UYUŞTURUCU') && clean.includes('KULLAN'))) {
+      clean = trUpperCase("Kullanmak için uyuşturucu veya uyarıcı madde satın almak, kabul etmek veya bulundurmak ya da uyuşturucu veya uyarıcı madde kullanmak");
+    }
+    
+    return clean;
+  }).filter(l => l !== '').join('\n');
 }
 
 export function populateTemplate(temp: string, d: any, sig?: string) {
   let h = temp || '';
   
-  if (d.supheliAdKimlik) {
-    const lines = d.supheliAdKimlik.split('\n').filter((l: string) => l.trim());
-    const formatted = lines.map((x: string, i: number) => `${i + 1}- ${x.trim()}`).join('<br>');
+  const formattedSupheli = formatSupheliText(d.supheliAdKimlik);
+  if (formattedSupheli) {
+    const lines = formattedSupheli.split('\n').filter((l: string) => l.trim());
+    const formatted = lines.length > 1 
+      ? lines.map((x: string, i: number) => `${i + 1}- ${x.trim()}`).join('<br>')
+      : lines[0] || '-';
     h = h.replace('{{SUPHELI_AD_KIMLIK}}', formatted);
   } else {
-    h = h.replace('{{SUPHELI_AD_KIMLIK}}', '1- ');
+    h = h.replace('{{SUPHELI_AD_KIMLIK}}', '-');
   }
 
-  if (d.sucAdi) {
-    const lines = d.sucAdi.split('\n').filter((l: string) => l.trim());
+  const formattedSuc = formatSucAdi(d.sucAdi);
+  if (formattedSuc) {
+    const lines = formattedSuc.split('\n').filter((l: string) => l.trim());
     // Eğer birden fazla suç varsa alt alta numaralı göster, yoksa düz yaz
     const formatted = lines.length > 1 
       ? lines.map((x: string, i: number) => `${i + 1}- ${x.trim()}`).join('<br>')

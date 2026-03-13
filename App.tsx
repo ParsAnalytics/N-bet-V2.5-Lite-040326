@@ -827,7 +827,7 @@ const App: React.FC = () => {
                         {(formData.supheliAdKimlik ? formData.supheliAdKimlik.split('\n') : ['']).map((line, idx, arr) => (
                           <div key={idx} className="flex items-center gap-1 sm:gap-2 animate-in fade-in slide-in-from-left-4 duration-300">
                             <span className="text-xs font-bold text-gray-400 w-4 text-center">{idx + 1}</span>
-                            <input
+                            <textarea
                               value={line}
                               onChange={(e) => {
                                 const newLines = [...arr];
@@ -835,7 +835,8 @@ const App: React.FC = () => {
                                 setFormData(f => ({ ...f, supheliAdKimlik: newLines.join('\n') }));
                               }}
                               placeholder='"ÖRNEK İSİM" (TC:12345678900)'
-                              className="flex-1 min-w-0 p-2 border-2 border-gray-200 rounded-lg text-sm text-gray-900 font-bold focus:ring-2 focus:ring-blue-500 bg-white"
+                              rows={2}
+                              className="flex-1 min-w-0 p-2 border-2 border-gray-200 rounded-lg text-sm text-gray-900 font-bold focus:ring-2 focus:ring-blue-500 bg-white resize-none"
                             />
                             <button
                               onClick={() => {
@@ -916,7 +917,7 @@ const App: React.FC = () => {
                     </div>
                     <div>
                       <label className="block text-[11px] font-black text-gray-500 mb-1 uppercase tracking-wider">5. Karakol Birimi <span className="text-red-500">*</span></label>
-                      <input type="text" value={formData.karakol} onChange={(e) => setFormData(f => ({ ...f, karakol: cleanKarakolName(e.target.value) }))} className="w-full p-3 border-2 border-gray-200 rounded-xl text-sm text-gray-900 font-bold focus:ring-2 focus:ring-blue-500 bg-white" />
+                      <textarea rows={2} value={formData.karakol} onChange={(e) => setFormData(f => ({ ...f, karakol: cleanKarakolName(e.target.value) }))} className="w-full p-2 border-2 border-gray-200 rounded-xl text-sm text-gray-900 font-bold focus:ring-2 focus:ring-blue-500 bg-white resize-none" />
                     </div>
                     <div>
                       <label className="block text-[11px] font-black text-gray-500 mb-1 uppercase tracking-wider">6. Karar Tarihi</label>
