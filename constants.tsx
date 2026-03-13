@@ -168,9 +168,9 @@ export function formatSupheliText(t: string) {
     n = trUpperCase(n);
     
     if (n && tc) {
-      return isYabanci ? `"${n}" PASAPORT NO/YBKN: ${tc}` : `"${n}" (TC:${tc})`;
+      return isYabanci ? `${n} PASAPORT NO/YBKN: ${tc}` : `${n} (TC:${tc})`;
     } else if (n) {
-      return isYabanci ? `"${n}" PASAPORT NO/YBKN: ` : `"${n}"`;
+      return isYabanci ? `${n} PASAPORT NO/YBKN: ` : `${n}`;
     } else if (tc) {
       return isYabanci ? `PASAPORT NO/YBKN: ${tc}` : `(TC:${tc})`;
     }
