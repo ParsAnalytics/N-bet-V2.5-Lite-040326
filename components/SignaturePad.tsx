@@ -32,8 +32,9 @@ const SignaturePad: React.FC<SignaturePadProps> = ({ onSave, onClose }) => {
       const parent = canvas.parentElement;
       if (parent) {
         const rect = parent.getBoundingClientRect();
-        // High DPI setup (Retina support)
         const dpr = window.devicePixelRatio || 1;
+        
+        // Use the measured dimensions from rect
         canvas.width = rect.width * dpr;
         canvas.height = rect.height * dpr;
         canvas.style.width = `${rect.width}px`;
@@ -42,9 +43,9 @@ const SignaturePad: React.FC<SignaturePadProps> = ({ onSave, onClose }) => {
         const ctx = canvas.getContext('2d', { alpha: false });
         if (ctx) {
           ctx.scale(dpr, dpr);
-          ctx.fillStyle = '#f9fafb'; // Background color matches modal
+          ctx.fillStyle = '#f9fafb';
           ctx.fillRect(0, 0, rect.width, rect.height);
-          ctx.strokeStyle = '#000044'; // Deep ink blue
+          ctx.strokeStyle = '#000044';
           ctx.lineCap = 'round';
           ctx.lineJoin = 'round';
           ctxRef.current = ctx;
@@ -52,7 +53,10 @@ const SignaturePad: React.FC<SignaturePadProps> = ({ onSave, onClose }) => {
       }
     };
 
-    initCanvas();
+    // Small timeout to ensure modal animations are finished and layout is settled
+    const timeoutId = setTimeout(initCanvas, 100);
+    
+    window.addEventListener('resize', initCanvas);
     
     const getPos = (e: MouseEvent | TouchEvent): PointWithTime => {
       const rect = canvas.getBoundingClientRect();
@@ -141,6 +145,8 @@ const SignaturePad: React.FC<SignaturePadProps> = ({ onSave, onClose }) => {
     canvas.addEventListener('touchend', handleEnd, { passive: false });
 
     return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('resize', initCanvas);
       canvas.removeEventListener('mousedown', handleStart);
       canvas.removeEventListener('mousemove', handleMove);
       canvas.removeEventListener('mouseup', handleEnd);
@@ -186,7 +192,7 @@ const SignaturePad: React.FC<SignaturePadProps> = ({ onSave, onClose }) => {
           </div>
         </div>
         
-        <div className="relative border-2 sm:border-4 border-gray-100 rounded-[20px] sm:rounded-[28px] bg-gray-50 mb-3 h-[400px] sm:h-[550px] overflow-hidden shadow-inner group">
+        <div className="relative border-2 sm:border-4 border-gray-100 rounded-[20px] sm:rounded-[28px] bg-gray-50 mb-3 h-[50vh] sm:h-[550px] overflow-hidden shadow-inner group touch-none">
           <canvas
             ref={canvasRef}
             className="cursor-crosshair w-full h-full touch-none"
