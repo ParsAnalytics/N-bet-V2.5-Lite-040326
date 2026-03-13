@@ -397,17 +397,25 @@ const App: React.FC = () => {
         telefon: 'telefon'
       };
 
+      const currentSavci = SAVCILAR[selectedSavciKey] || SAVCILAR[Object.keys(SAVCILAR)[0]];
+
       for (let idx = 0; idx < decisionKeys.length; idx++) {
         const key = decisionKeys[idx];
         if (selectedDecisions[key]) {
           const variedSignature = generateVariedSignature(originalStrokes);
           
+          const combinedData = { 
+            ...formData, 
+            savciAdi: currentSavci.name, 
+            savciSicil: currentSavci.sicil 
+          };
+
           newKararlar.push({
             id: `${timestamp}-${idx}-${Math.random()}`,
             type: typeMapping[key],
-            formData: { ...formData },
+            formData: combinedData,
             signatureData: variedSignature,
-            html: populateTemplate(TEMPLATES[templateMapping[key]], formData, variedSignature)
+            html: populateTemplate(TEMPLATES[templateMapping[key]], combinedData, variedSignature)
           });
         }
       }
@@ -1215,16 +1223,24 @@ const App: React.FC = () => {
                 else if (typeLower.includes('kan')) { tempKey = 'kan'; }
                 else if (typeLower.includes('telefon') || typeLower.includes('inceleme')) { tempKey = 'telefon'; }
 
-                 setKararlar(prev => prev.map(k => {
-                  if (k.id === signingKararId) {
-                    return { 
-                      ...k, 
-                      signatureData: dataUrl, 
-                      html: populateTemplate(TEMPLATES[tempKey], k.formData, dataUrl) 
-                    };
-                  }
-                  return k;
-                }));
+                  setKararlar(prev => prev.map(k => {
+                    if (k.id === signingKararId) {
+                      const currentSavci = SAVCILAR[selectedSavciKey] || SAVCILAR[Object.keys(SAVCILAR)[0]];
+                      const combinedData = { 
+                        ...k.formData, 
+                        savciAdi: currentSavci.name, 
+                        savciSicil: currentSavci.sicil 
+                      };
+
+                      return { 
+                        ...k, 
+                        formData: combinedData,
+                        signatureData: dataUrl, 
+                        html: populateTemplate(TEMPLATES[tempKey], combinedData, dataUrl) 
+                      };
+                    }
+                    return k;
+                  }));
               }
               
               setShowSignatureModal(false);
