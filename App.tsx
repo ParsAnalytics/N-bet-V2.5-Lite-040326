@@ -880,7 +880,7 @@ const App: React.FC = () => {
                         {(formData.sucAdi ? formData.sucAdi.split('\n') : ['']).map((line, idx, arr) => (
                           <div key={idx} className="flex items-center gap-1 sm:gap-2 animate-in fade-in slide-in-from-left-4 duration-300">
                             <span className="text-xs font-bold text-gray-400 w-4 text-center">{idx + 1}</span>
-                            <input
+                            <textarea
                               value={line}
                               onChange={(e) => {
                                 const newLines = [...arr];
@@ -888,7 +888,8 @@ const App: React.FC = () => {
                                 setFormData(f => ({ ...f, sucAdi: newLines.join('\n') }));
                               }}
                               placeholder="Suç Adı / Madde"
-                              className="flex-1 min-w-0 p-2 border-2 border-gray-200 rounded-lg text-sm text-gray-900 font-bold focus:ring-2 focus:ring-blue-500 bg-white"
+                              rows={2}
+                              className="flex-1 min-w-0 p-2 border-2 border-gray-200 rounded-lg text-sm text-gray-900 font-bold focus:ring-2 focus:ring-blue-500 bg-white resize-none"
                             />
                             <button
                               onClick={() => {
