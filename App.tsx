@@ -173,12 +173,14 @@ const App: React.FC = () => {
   };
 
   const initial = getInitialDateTime();
+  const defaultSavciKey = localStorage.getItem('nobetApp_lastSavci') || Object.keys(SAVCILAR)[0];
+  const defaultSavci = SAVCILAR[defaultSavciKey] || SAVCILAR[Object.keys(SAVCILAR)[0]];
   
   const [infoNote, setInfoNote] = useState('');
-  const [selectedSavciKey, setSelectedSavciKey] = useState(Object.keys(SAVCILAR)[0]);
+  const [selectedSavciKey, setSelectedSavciKey] = useState(defaultSavciKey);
   const [formData, setFormData] = useState<DecisionFormData>({
-    savciAdi: SAVCILAR[Object.keys(SAVCILAR)[0]].name,
-    savciSicil: SAVCILAR[Object.keys(SAVCILAR)[0]].sicil,
+    savciAdi: defaultSavci.name,
+    savciSicil: defaultSavci.sicil,
     supheliAdKimlik: '',
     sucAdi: '',
     karakol: '',
@@ -211,6 +213,10 @@ const App: React.FC = () => {
   useEffect(() => {
     localStorage.setItem('nobetApp_gozaltiListesi', JSON.stringify(trackingList));
   }, [trackingList]);
+
+  useEffect(() => {
+    localStorage.setItem('nobetApp_lastSavci', selectedSavciKey);
+  }, [selectedSavciKey]);
 
   const gozaltiTracking = trackingList.filter(item => 
     item.type.toLowerCase().includes('gözaltı') || item.type.toLowerCase() === 'gozalti'
@@ -430,9 +436,12 @@ const App: React.FC = () => {
       setKararlar([]);
       setTrackingList([]);
       setInfoNote('');
+      const currentSavciKey = localStorage.getItem('nobetApp_lastSavci') || Object.keys(SAVCILAR)[0];
+      const currentSavci = SAVCILAR[currentSavciKey] || SAVCILAR[Object.keys(SAVCILAR)[0]];
+
       setFormData({
-        savciAdi: SAVCILAR[Object.keys(SAVCILAR)[0]].name,
-        savciSicil: SAVCILAR[Object.keys(SAVCILAR)[0]].sicil,
+        savciAdi: currentSavci.name,
+        savciSicil: currentSavci.sicil,
         supheliAdKimlik: '',
         sucAdi: '',
         karakol: '',
