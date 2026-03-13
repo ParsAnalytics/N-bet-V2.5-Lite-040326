@@ -175,6 +175,7 @@ export function formatSupheliText(t: string) {
       return isYabanci ? `PASAPORT NO/YBKN: ${tc}` : `(TC:${tc})`;
     }
     return '';
+    return '';
   }).filter(l => l.trim() !== '').join('\n');
 }
 

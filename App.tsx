@@ -222,14 +222,14 @@ const App: React.FC = () => {
   useEffect(() => {
     const textareas = document.querySelectorAll('textarea');
     textareas.forEach(ta => {
-      // Don't use 'auto' here to avoid jumpy behavior, use min height
-      const minHeight = ta.classList.contains('p-3') ? 48 : 42;
+      // Bilgi notu (p-4 olan) veya adres (p-3) veya diğerleri (p-2) için minHeight ayarla
+      const minHeight = ta.classList.contains('p-4') ? 240 : (ta.classList.contains('p-3') ? 48 : 42);
       ta.style.height = minHeight + 'px';
       if (ta.scrollHeight > minHeight) {
         ta.style.height = ta.scrollHeight + 'px';
       }
     });
-  }, [formData, currentPage]); // Also trigger on page change to capture newly mounted textareas
+  }, [formData, infoNote, currentPage]); // infoNote eklendi ki yapıştırınca dolsun
 
   const gozaltiTracking = trackingList.filter(item => 
     item.type.toLowerCase().includes('gözaltı') || item.type.toLowerCase() === 'gozalti'
@@ -836,7 +836,7 @@ const App: React.FC = () => {
                     value={infoNote}
                     onChange={(e) => setInfoNote(e.target.value)}
                     placeholder="Emniyetten gelen bilgi notunu yapıştırın..."
-                    className="w-full p-4 border-2 border-gray-200 rounded-2xl text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none h-40 resize-none bg-gray-50 font-medium"
+                    className="w-full p-4 border-2 border-gray-200 rounded-2xl text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none min-h-[240px] resize-none bg-gray-50 font-medium overflow-hidden"
                   />
                   <div className="flex gap-2 mt-2">
                     <button onClick={handleAIAnalysis} disabled={isLoading || !infoNote.trim()} className="flex-1 py-3.5 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-black rounded-xl transition-all flex items-center justify-center gap-2 shadow-xl text-xs uppercase">
