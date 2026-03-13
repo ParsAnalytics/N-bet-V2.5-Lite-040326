@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   FileText, 
   Trash2, 
@@ -791,6 +791,46 @@ const App: React.FC = () => {
     </div>
   );
 
+  const ScaledPreview = ({ children }: { children: React.ReactNode }) => {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [scale, setScale] = useState(1);
+
+    useEffect(() => {
+      const updateScale = () => {
+        if (containerRef.current) {
+          const containerWidth = containerRef.current.offsetWidth;
+          const targetWidth = 800; 
+          if (containerWidth < targetWidth) {
+            setScale(containerWidth / targetWidth);
+          } else {
+            setScale(1);
+          }
+        }
+      };
+      updateScale();
+      window.addEventListener('resize', updateScale);
+      return () => window.removeEventListener('resize', updateScale);
+    }, []);
+
+    return (
+      <div ref={containerRef} className="w-full overflow-hidden flex justify-center bg-gray-50 rounded-2xl border-2 border-gray-100 p-1">
+        <div style={{ 
+          transform: `scale(${scale})`, 
+          transformOrigin: 'top center',
+          width: '800px',
+          height: 'auto',
+          marginBottom: `calc(-100% * (1 - ${scale}))`,
+          // Ensuring the height of the outer container collapses properly
+          maxHeight: scale < 1 ? `calc(100% * ${scale})` : 'none'
+        }} className="transition-transform duration-300">
+          <div className="flex justify-center">
+            {children}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-100 pb-12 font-sans selection:bg-blue-100">
       <header className="w-full max-w-2xl text-center mb-2 mt-8 px-4 relative">
@@ -1050,8 +1090,10 @@ const App: React.FC = () => {
                           <Trash2 size={18} />
                         </button>
                       </div>
-                      <div className="p-8 bg-white overflow-x-auto flex justify-center">
-                        <div id={`karar-view-${k.id}`} className="bg-white border-2 border-gray-200 p-10 min-w-[210mm] max-w-[210mm] shadow-sm text-gray-900" dangerouslySetInnerHTML={{ __html: k.html }} />
+                      <div className="p-4 sm:p-8 bg-white overflow-hidden flex justify-center">
+                        <ScaledPreview>
+                          <div id={`karar-view-${k.id}`} className="bg-white border-2 border-gray-200 p-10 min-w-[800px] max-w-[800px] shadow-sm text-gray-900" dangerouslySetInnerHTML={{ __html: k.html }} />
+                        </ScaledPreview>
                       </div>
                       <div className="p-6 bg-gray-50 border-t-2 border-gray-100 flex gap-4">
                         <button onClick={() => { setSigningKararId(k.id); setIsBulkSigning(false); setShowSignatureModal(true); }} className={`flex-1 py-4 rounded-2xl text-xs font-black flex items-center justify-center gap-2 transition-all uppercase tracking-widest shadow-lg ${k.signatureData ? 'bg-green-600 text-white' : 'bg-white border-2 border-blue-600 text-blue-700 hover:bg-blue-50'}`}>
