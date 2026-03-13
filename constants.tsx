@@ -35,7 +35,7 @@ Madde 282: Suçtan Kaynaklanan Malvarlığı Değerlerini Aklama, Madde 299: Cum
 const TABLE_STYLE = "border: 1px solid #000; border-collapse: collapse; width: 100%; font-family: 'Inter', sans-serif; color: #000; margin-bottom: 20px; background-color: #fff;";
 const TH_STYLE = "border: 1px solid #000; padding: 6px; text-align: center; background-color: #f3f4f6; font-weight: bold; font-size: 10pt;";
 const TD_LABEL_STYLE = "border: 1px solid #000; padding: 6px; font-size: 9pt; width: 40%; vertical-align: top; font-weight: 500;";
-const TD_VALUE_STYLE = "border: 1px solid #000; padding: 6px; font-size: 9pt; vertical-align: top;";
+const TD_VALUE_STYLE = "border: 1px solid #000; padding: 6px; font-size: 9pt; vertical-align: top; word-break: break-word; overflow-wrap: anywhere;";
 const SIGNATURE_BLOCK_STYLE = "margin-top: 30px; display: flex; flex-direction: column; align-items: center; width: 280px; margin-left: auto; text-align: center; font-size: 9pt; line-height: 1.5; color: #000;";
 
 export const TEMPLATES = {
@@ -199,9 +199,11 @@ export function populateTemplate(temp: string, d: any, sig?: string) {
   const formattedSupheli = formatSupheliText(d.supheliAdKimlik);
   if (formattedSupheli) {
     const lines = formattedSupheli.split('\n').filter((l: string) => l.trim());
-    const formatted = lines.length > 1 
-      ? lines.map((x: string, i: number) => `${i + 1}- ${x.trim()}`).join('<br>')
-      : lines[0] || '-';
+    // Her zaman dikey listeleme (alt alta) sağlamak için her ismi bir div içinde döndür
+    const formatted = lines.map((x: string, i: number) => {
+      const prefix = lines.length > 1 ? `${i + 1}- ` : '';
+      return `<div style="margin-bottom: 2px;">${prefix}${x.trim()}</div>`;
+    }).join('');
     h = h.replace('{{SUPHELI_AD_KIMLIK}}', formatted);
   } else {
     h = h.replace('{{SUPHELI_AD_KIMLIK}}', '-');
@@ -210,10 +212,11 @@ export function populateTemplate(temp: string, d: any, sig?: string) {
   const formattedSuc = formatSucAdi(d.sucAdi);
   if (formattedSuc) {
     const lines = formattedSuc.split('\n').filter((l: string) => l.trim());
-    // Eğer birden fazla suç varsa alt alta numaralı göster, yoksa düz yaz
-    const formatted = lines.length > 1 
-      ? lines.map((x: string, i: number) => `${i + 1}- ${x.trim()}`).join('<br>')
-      : lines[0] || '-';
+    // Her zaman dikey listeleme
+    const formatted = lines.map((x: string, i: number) => {
+      const prefix = lines.length > 1 ? `${i + 1}- ` : '';
+      return `<div style="margin-bottom: 2px;">${prefix}${x.trim()}</div>`;
+    }).join('');
     h = h.replace(/{{SUC_ADI}}/g, formatted);
   } else {
     h = h.replace(/{{SUC_ADI}}/g, '-');
