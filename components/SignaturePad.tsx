@@ -174,24 +174,24 @@ const SignaturePad: React.FC<SignaturePadProps> = ({ onSave, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[200] p-2 sm:p-4 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-white rounded-[32px] shadow-2xl w-full max-w-2xl p-4 sm:p-6 border border-gray-100 overflow-hidden transform animate-in zoom-in-95 duration-200">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="p-2 bg-blue-50 rounded-lg">
-            <PenTool size={24} className="text-blue-600" />
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[200] p-1 sm:p-4 backdrop-blur-sm animate-in fade-in duration-300">
+      <div className="bg-white rounded-[24px] sm:rounded-[32px] shadow-2xl w-full max-w-4xl p-2 sm:p-6 border border-gray-100 overflow-hidden transform animate-in zoom-in-95 duration-200">
+        <div className="flex items-center gap-3 mb-2 sm:mb-4">
+          <div className="p-1.5 sm:p-2 bg-blue-50 rounded-lg">
+            <PenTool size={20} className="text-blue-600 sm:w-6 sm:h-6" />
           </div>
           <div>
-            <h3 className="text-lg font-black uppercase tracking-widest text-gray-800">Islak İmza Paneli</h3>
-            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">Bézier & Velocity Stabilizer V2</p>
+            <h3 className="text-sm sm:text-lg font-black uppercase tracking-widest text-gray-800">Islak İmza Paneli</h3>
+            <p className="text-[9px] sm:text-[10px] text-gray-400 font-bold uppercase tracking-tighter">Bézier & Velocity Stabilizer V2</p>
           </div>
         </div>
         
-        <div className="relative border-4 border-gray-100 rounded-[28px] bg-gray-50 mb-4 h-80 sm:h-96 overflow-hidden shadow-inner group">
+        <div className="relative border-2 sm:border-4 border-gray-100 rounded-[20px] sm:rounded-[28px] bg-gray-50 mb-3 h-[400px] sm:h-[550px] overflow-hidden shadow-inner group">
           <canvas
             ref={canvasRef}
             className="cursor-crosshair w-full h-full touch-none"
           />
-          <div className="absolute bottom-4 right-4 text-[9px] font-black text-gray-300 uppercase pointer-events-none select-none group-hover:opacity-50 transition-opacity">
+          <div className="absolute bottom-3 right-4 text-[8px] sm:text-[9px] font-black text-gray-300 uppercase pointer-events-none select-none group-hover:opacity-50 transition-opacity">
             İmza Alanı
           </div>
         </div>
