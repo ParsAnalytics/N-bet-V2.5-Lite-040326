@@ -218,6 +218,19 @@ const App: React.FC = () => {
     localStorage.setItem('nobetApp_lastSavci', selectedSavciKey);
   }, [selectedSavciKey]);
 
+  // Auto-expand all textareas on value change (AI or Manual)
+  useEffect(() => {
+    const textareas = document.querySelectorAll('textarea');
+    textareas.forEach(ta => {
+      // Don't use 'auto' here to avoid jumpy behavior, use min height
+      const minHeight = ta.classList.contains('p-3') ? 48 : 42;
+      ta.style.height = minHeight + 'px';
+      if (ta.scrollHeight > minHeight) {
+        ta.style.height = ta.scrollHeight + 'px';
+      }
+    });
+  }, [formData, currentPage]); // Also trigger on page change to capture newly mounted textareas
+
   const gozaltiTracking = trackingList.filter(item => 
     item.type.toLowerCase().includes('gözaltı') || item.type.toLowerCase() === 'gozalti'
   );
@@ -851,9 +864,14 @@ const App: React.FC = () => {
                                 newLines[idx] = e.target.value;
                                 setFormData(f => ({ ...f, supheliAdKimlik: newLines.join('\n') }));
                               }}
+                              onInput={(e) => {
+                                const target = e.currentTarget;
+                                target.style.height = '42px';
+                                target.style.height = target.scrollHeight + 'px';
+                              }}
                               placeholder="ÖRNEK İSİM (TC:12345678900)"
-                              rows={2}
-                              className="flex-1 min-w-0 p-2 border-2 border-gray-200 rounded-lg text-sm text-gray-900 font-bold focus:ring-2 focus:ring-blue-500 bg-white resize-none"
+                              rows={1}
+                              className="flex-1 min-w-0 p-2 border-2 border-gray-200 rounded-lg text-sm text-gray-900 font-bold focus:ring-2 focus:ring-blue-500 bg-white resize-none overflow-hidden"
                             />
                             <button
                               onClick={() => {
@@ -905,9 +923,14 @@ const App: React.FC = () => {
                                 newLines[idx] = e.target.value;
                                 setFormData(f => ({ ...f, sucAdi: newLines.join('\n') }));
                               }}
+                              onInput={(e) => {
+                                const target = e.currentTarget;
+                                target.style.height = '42px';
+                                target.style.height = target.scrollHeight + 'px';
+                              }}
                               placeholder="Suç Adı / Madde"
-                              rows={2}
-                              className="flex-1 min-w-0 p-2 border-2 border-gray-200 rounded-lg text-sm text-gray-900 font-bold focus:ring-2 focus:ring-blue-500 bg-white resize-none"
+                              rows={1}
+                              className="flex-1 min-w-0 p-2 border-2 border-gray-200 rounded-lg text-sm text-gray-900 font-bold focus:ring-2 focus:ring-blue-500 bg-white resize-none overflow-hidden"
                             />
                             <button
                               onClick={() => {
@@ -934,7 +957,17 @@ const App: React.FC = () => {
                     </div>
                     <div>
                       <label className="block text-[11px] font-black text-gray-500 mb-1 uppercase tracking-wider">5. Karakol Birimi <span className="text-red-500">*</span></label>
-                      <textarea rows={2} value={formData.karakol} onChange={(e) => setFormData(f => ({ ...f, karakol: cleanKarakolName(e.target.value) }))} className="w-full p-2 border-2 border-gray-200 rounded-xl text-sm text-gray-900 font-bold focus:ring-2 focus:ring-blue-500 bg-white resize-none" />
+                      <textarea 
+                        rows={1} 
+                        value={formData.karakol} 
+                        onChange={(e) => setFormData(f => ({ ...f, karakol: cleanKarakolName(e.target.value) }))} 
+                        onInput={(e) => {
+                          const target = e.currentTarget;
+                          target.style.height = '42px';
+                          target.style.height = target.scrollHeight + 'px';
+                        }}
+                        className="w-full p-2 border-2 border-gray-200 rounded-xl text-sm text-gray-900 font-bold focus:ring-2 focus:ring-blue-500 bg-white resize-none overflow-hidden" 
+                      />
                     </div>
                     <div>
                       <label className="block text-[11px] font-black text-gray-500 mb-1 uppercase tracking-wider">6. Karar Tarihi</label>
@@ -943,7 +976,17 @@ const App: React.FC = () => {
                   </div>
                   <div>
                     <label className="block text-[11px] font-black text-gray-500 mb-1 uppercase tracking-wider">7. Arama Adresi</label>
-                    <textarea value={formData.aranilacakAdres} onChange={(e) => setFormData(f => ({ ...f, aranilacakAdres: e.target.value }))} rows={2} className="w-full p-3 border-2 border-gray-200 rounded-xl text-sm font-bold bg-white" />
+                    <textarea 
+                      value={formData.aranilacakAdres} 
+                      onChange={(e) => setFormData(f => ({ ...f, aranilacakAdres: e.target.value }))} 
+                      onInput={(e) => {
+                        const target = e.currentTarget;
+                        target.style.height = '48px';
+                        target.style.height = target.scrollHeight + 'px';
+                      }}
+                      rows={1} 
+                      className="w-full p-3 border-2 border-gray-200 rounded-xl text-sm font-bold bg-white resize-none overflow-hidden" 
+                    />
                   </div>
                   <div className="grid grid-cols-1 gap-4">
                     <div>
