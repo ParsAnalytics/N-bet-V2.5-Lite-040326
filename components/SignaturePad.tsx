@@ -174,8 +174,8 @@ const SignaturePad: React.FC<SignaturePadProps> = ({ onSave, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[200] p-4 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-white rounded-[32px] shadow-2xl w-full max-w-md p-6 border border-gray-100 overflow-hidden transform animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[200] p-2 sm:p-4 backdrop-blur-sm animate-in fade-in duration-300">
+      <div className="bg-white rounded-[32px] shadow-2xl w-full max-w-2xl p-4 sm:p-6 border border-gray-100 overflow-hidden transform animate-in zoom-in-95 duration-200">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 bg-blue-50 rounded-lg">
             <PenTool size={24} className="text-blue-600" />
@@ -186,7 +186,7 @@ const SignaturePad: React.FC<SignaturePadProps> = ({ onSave, onClose }) => {
           </div>
         </div>
         
-        <div className="relative border-4 border-gray-100 rounded-[28px] bg-gray-50 mb-6 h-64 overflow-hidden shadow-inner group">
+        <div className="relative border-4 border-gray-100 rounded-[28px] bg-gray-50 mb-4 h-80 sm:h-96 overflow-hidden shadow-inner group">
           <canvas
             ref={canvasRef}
             className="cursor-crosshair w-full h-full touch-none"
@@ -196,23 +196,23 @@ const SignaturePad: React.FC<SignaturePadProps> = ({ onSave, onClose }) => {
           </div>
         </div>
 
-        <div className="flex justify-between gap-3">
+        <div className="flex justify-between gap-2 sm:gap-3">
           <button 
             onClick={clear} 
-            className="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-2xl text-xs font-black uppercase tracking-widest transition-all active:scale-95"
+            className="px-4 sm:px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-2xl text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all active:scale-95"
           >
             Temizle
           </button>
           <div className="flex gap-2">
             <button 
               onClick={onClose} 
-              className="px-6 py-3 bg-white border-2 border-gray-200 hover:bg-gray-50 text-gray-500 rounded-2xl text-xs font-black uppercase tracking-widest transition-all"
+              className="px-4 sm:px-6 py-3 bg-white border-2 border-gray-200 hover:bg-gray-50 text-gray-500 rounded-2xl text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all"
             >
               İptal
             </button>
             <button 
               onClick={save} 
-              className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-blue-200 transition-all transform active:scale-95 flex items-center gap-2"
+              className="px-6 sm:px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-[10px] sm:text-xs font-black uppercase tracking-widest shadow-lg shadow-blue-200 transition-all transform active:scale-95 flex items-center gap-2"
             >
               Tamamla
             </button>
