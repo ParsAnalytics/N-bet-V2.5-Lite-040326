@@ -819,9 +819,9 @@ const App: React.FC = () => {
           transformOrigin: 'top center',
           width: '800px',
           height: 'auto',
-          marginBottom: `calc(-100% * (1 - ${scale}))`,
+          marginBottom: scale < 1 ? `calc(800px * ${scale - 1})` : '0',
           // Ensuring the height of the outer container collapses properly
-          maxHeight: scale < 1 ? `calc(100% * ${scale})` : 'none'
+          display: 'block'
         }} className="transition-transform duration-300">
           <div className="flex justify-center">
             {children}
@@ -1090,9 +1090,9 @@ const App: React.FC = () => {
                           <Trash2 size={18} />
                         </button>
                       </div>
-                      <div className="p-4 sm:p-8 bg-white overflow-hidden flex justify-center">
+                      <div className="p-4 sm:p-8 bg-white overflow-hidden flex justify-center items-start min-h-[400px]">
                         <ScaledPreview>
-                          <div id={`karar-view-${k.id}`} className="bg-white border-2 border-gray-200 p-10 min-w-[800px] max-w-[800px] shadow-sm text-gray-900" dangerouslySetInnerHTML={{ __html: k.html }} />
+                          <div id={`karar-view-${k.id}`} className="bg-white border-[1px] border-black p-10 w-[800px] min-w-[800px] max-w-[800px] shadow-sm text-gray-900 overflow-hidden" dangerouslySetInnerHTML={{ __html: k.html }} />
                         </ScaledPreview>
                       </div>
                       <div className="p-6 bg-gray-50 border-t-2 border-gray-100 flex gap-4">
