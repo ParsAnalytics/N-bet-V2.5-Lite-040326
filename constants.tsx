@@ -32,11 +32,11 @@ Madde 282: Suçtan Kaynaklanan Malvarlığı Değerlerini Aklama, Madde 299: Cum
 6136 Sayılı Kanuna Muhalefet.
 `;
 
-const TABLE_STYLE = "border: 1px solid #000; border-collapse: collapse; width: 100%; font-family: 'Inter', sans-serif; color: #000; margin-bottom: 20px; background-color: #fff; table-layout: fixed;";
-const TH_STYLE = "border: 1px solid #000; padding: 8px 6px; text-align: center; background-color: #f3f4f6; font-weight: bold; font-size: 10pt; line-height: 1.2;";
-const TD_LABEL_STYLE = "border: 1px solid #000; padding: 8px 6px; font-size: 9pt; width: 35%; vertical-align: top; font-weight: 600; line-height: 1.4;";
-const TD_VALUE_STYLE = "border: 1px solid #000; padding: 8px 6px; font-size: 9pt; vertical-align: top; word-break: break-word; overflow-wrap: anywhere; line-height: 1.4;";
-const SIGNATURE_BLOCK_STYLE = "margin-top: 30px; display: flex; flex-direction: column; align-items: center; width: 300px; margin-left: auto; text-align: center; font-size: 9pt; line-height: 1.5; color: #000;";
+const TABLE_STYLE = "border: 1px solid #000; border-collapse: collapse; width: 100%; font-family: 'Inter', sans-serif; color: #000; margin-bottom: 20px; background-color: #fff; table-layout: auto; font-variant-numeric: tabular-nums lining-nums; -webkit-font-smoothing: antialiased;";
+const TH_STYLE = "border: 1px solid #000; padding: 10px 8px; text-align: center; background-color: #f3f4f6; font-weight: bold; font-size: 10pt; line-height: 1.2;";
+const TD_LABEL_STYLE = "border: 1px solid #000; padding: 10px 8px; font-size: 9pt; width: 35%; min-width: 140px; vertical-align: top; font-weight: 600; line-height: 1.5;";
+const TD_VALUE_STYLE = "border: 1px solid #000; padding: 10px 8px; font-size: 9pt; vertical-align: top; word-break: break-word; overflow-wrap: anywhere; line-height: 1.5;";
+const SIGNATURE_BLOCK_STYLE = "margin-top: 40px; display: flex; flex-direction: column; align-items: center; width: 300px; margin-left: auto; text-align: center; font-size: 9pt; line-height: 1.6; color: #000; -webkit-print-color-adjust: exact;";
 
 export const TEMPLATES = {
   gozalti: `

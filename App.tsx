@@ -816,14 +816,15 @@ const App: React.FC = () => {
       <div ref={containerRef} className="w-full overflow-hidden flex justify-center bg-gray-50 rounded-2xl border-2 border-gray-100 p-1">
         <div style={{ 
           transform: `scale(${scale})`, 
+          WebkitTransform: `scale(${scale})`,
           transformOrigin: 'top center',
           width: '800px',
           height: 'auto',
           marginBottom: scale < 1 ? `calc(800px * ${scale - 1})` : '0',
-          // Ensuring the height of the outer container collapses properly
-          display: 'block'
-        }} className="transition-transform duration-300">
-          <div className="flex justify-center">
+          display: 'block',
+          boxSizing: 'border-box'
+        }} className="transition-transform duration-300 pointer-events-none">
+          <div className="flex justify-center pointer-events-auto">
             {children}
           </div>
         </div>
