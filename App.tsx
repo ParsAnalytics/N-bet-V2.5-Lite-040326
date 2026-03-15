@@ -822,7 +822,9 @@ const App: React.FC = () => {
           height: 'auto',
           marginBottom: scale < 1 ? `calc(800px * ${scale - 1})` : '0',
           display: 'block',
-          boxSizing: 'border-box'
+          boxSizing: 'border-box',
+          backfaceVisibility: 'hidden',
+          WebkitBackfaceVisibility: 'hidden'
         }} className="transition-transform duration-300 pointer-events-none">
           <div className="flex justify-center pointer-events-auto">
             {children}
@@ -1091,9 +1093,9 @@ const App: React.FC = () => {
                           <Trash2 size={18} />
                         </button>
                       </div>
-                      <div className="p-4 sm:p-8 bg-white overflow-hidden flex justify-center items-start min-h-[400px]">
+                      <div className="p-2 sm:p-4 bg-white overflow-hidden flex justify-center items-start min-h-[400px]">
                         <ScaledPreview>
-                          <div id={`karar-view-${k.id}`} className="bg-white border-[1px] border-black p-10 w-[800px] min-w-[800px] max-w-[800px] shadow-sm text-gray-900 overflow-hidden" dangerouslySetInnerHTML={{ __html: k.html }} />
+                          <div id={`karar-view-${k.id}`} className="bg-white border-[1px] border-black p-6 w-[800px] min-w-[800px] max-w-[800px] shadow-sm text-gray-900 overflow-hidden box-border" dangerouslySetInnerHTML={{ __html: k.html }} />
                         </ScaledPreview>
                       </div>
                       <div className="p-6 bg-gray-50 border-t-2 border-gray-100 flex gap-4">
