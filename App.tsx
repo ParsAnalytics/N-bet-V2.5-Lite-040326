@@ -793,39 +793,58 @@ const App: React.FC = () => {
 
   const ScaledPreview = ({ children }: { children: React.ReactNode }) => {
     const containerRef = useRef<HTMLDivElement>(null);
+    const contentRef = useRef<HTMLDivElement>(null);
     const [scale, setScale] = useState(1);
+    const [containerHeight, setContainerHeight] = useState('auto');
 
     useEffect(() => {
       const updateScale = () => {
-        if (containerRef.current) {
+        if (containerRef.current && contentRef.current) {
           const containerWidth = containerRef.current.offsetWidth;
-          const targetWidth = 800; 
-          if (containerWidth < targetWidth) {
-            setScale(containerWidth / targetWidth);
-          } else {
-            setScale(1);
-          }
+          const targetWidth = 800; // Original document width
+          const newScale = containerWidth < targetWidth ? containerWidth / targetWidth : 1;
+          
+          setScale(newScale);
+          
+          // Compensate container height for the scaled content
+          const contentHeight = contentRef.current.offsetHeight;
+          setContainerHeight(`${contentHeight * newScale}px`);
         }
       };
+
       updateScale();
+      // Add a small delay to ensure React has finished rendering children
+      const timer = setTimeout(updateScale, 100);
+      
       window.addEventListener('resize', updateScale);
-      return () => window.removeEventListener('resize', updateScale);
-    }, []);
+      return () => {
+        window.removeEventListener('resize', updateScale);
+        clearTimeout(timer);
+      };
+    }, [children]);
 
     return (
-      <div ref={containerRef} className="w-full overflow-hidden flex justify-center bg-gray-50 rounded-2xl border-2 border-gray-100 p-1">
-        <div style={{ 
-          transform: `scale(${scale})`, 
-          WebkitTransform: `scale(${scale})`,
-          transformOrigin: 'top center',
-          width: '800px',
-          height: 'auto',
-          marginBottom: scale < 1 ? `calc(800px * ${scale - 1})` : '0',
-          display: 'block',
-          boxSizing: 'border-box',
-          backfaceVisibility: 'hidden',
-          WebkitBackfaceVisibility: 'hidden'
-        }} className="transition-transform duration-300 pointer-events-none">
+      <div 
+        ref={containerRef} 
+        className="w-full overflow-hidden flex justify-center bg-gray-50 rounded-2xl border-2 border-gray-100 p-1"
+        style={{ height: containerHeight }}
+        translate="no"
+      >
+        <div 
+          ref={contentRef}
+          style={{ 
+            transform: `scale(${scale})`, 
+            WebkitTransform: `scale(${scale})`,
+            transformOrigin: 'top center',
+            width: '800px',
+            height: 'auto',
+            display: 'block',
+            boxSizing: 'border-box',
+            backfaceVisibility: 'hidden',
+            WebkitBackfaceVisibility: 'hidden'
+          }} 
+          className="transition-transform duration-300 pointer-events-none"
+        >
           <div className="flex justify-center pointer-events-auto">
             {children}
           </div>
