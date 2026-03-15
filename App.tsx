@@ -796,25 +796,33 @@ const App: React.FC = () => {
     const contentRef = useRef<HTMLDivElement>(null);
     const [scale, setScale] = useState(1);
     const [containerHeight, setContainerHeight] = useState('auto');
+    const [isWebkit, setIsWebkit] = useState(false);
 
     useEffect(() => {
+      // Check if browser is Webkit based (Safari/Chrome) for 'zoom' property support
+      const ua = navigator.userAgent.toLowerCase();
+      setIsWebkit(ua.includes('webkit') && !ua.includes('edge'));
+
       const updateScale = () => {
         if (containerRef.current && contentRef.current) {
           const containerWidth = containerRef.current.offsetWidth;
-          const targetWidth = 800; // Original document width
+          const targetWidth = 800; 
           const newScale = containerWidth < targetWidth ? containerWidth / targetWidth : 1;
           
           setScale(newScale);
           
-          // Compensate container height for the scaled content
-          const contentHeight = contentRef.current.offsetHeight;
-          setContainerHeight(`${contentHeight * newScale}px`);
+          // For zoom, height adjusts naturally, for transform we need calculation
+          if (!(ua.includes('webkit') && !ua.includes('edge'))) {
+             const contentHeight = contentRef.current.offsetHeight;
+             setContainerHeight(`${contentHeight * newScale}px`);
+          } else {
+             setContainerHeight('auto');
+          }
         }
       };
 
       updateScale();
-      // Add a small delay to ensure React has finished rendering children
-      const timer = setTimeout(updateScale, 100);
+      const timer = setTimeout(updateScale, 150);
       
       window.addEventListener('resize', updateScale);
       return () => {
@@ -823,27 +831,38 @@ const App: React.FC = () => {
       };
     }, [children]);
 
+    const zoomStyle: any = isWebkit 
+      ? { zoom: scale } 
+      : { 
+          transform: `scale(${scale})`, 
+          transformOrigin: 'top center',
+          marginBottom: scale < 1 ? `calc(800px * ${scale - 1})` : '0' 
+        };
+
     return (
       <div 
         ref={containerRef} 
-        className="w-full overflow-hidden flex justify-center bg-gray-50 rounded-2xl border-2 border-gray-100 p-1"
-        style={{ height: containerHeight }}
-        translate="no"
+        className="w-full overflow-hidden flex justify-center bg-gray-100 rounded-xl p-0"
+        style={{ height: containerHeight, minHeight: '300px' }}
       >
         <div 
           ref={contentRef}
           style={{ 
-            transform: `scale(${scale})`, 
-            WebkitTransform: `scale(${scale})`,
-            transformOrigin: 'top center',
+            ...zoomStyle,
             width: '800px',
+            minWidth: '800px',
+            maxWidth: '800px',
             height: 'auto',
             display: 'block',
             boxSizing: 'border-box',
-            backfaceVisibility: 'hidden',
-            WebkitBackfaceVisibility: 'hidden'
+            backgroundColor: '#fff',
+            WebkitTextSizeAdjust: 'none',
+            // @ts-ignore
+            textSizeAdjust: 'none',
+            imageRendering: 'crisp-edges'
           }} 
-          className="transition-transform duration-300 pointer-events-none"
+          className="transition-opacity duration-300 pointer-events-none"
+          translate="no"
         >
           <div className="flex justify-center pointer-events-auto">
             {children}

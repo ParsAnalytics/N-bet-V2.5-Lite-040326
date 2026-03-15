@@ -32,29 +32,28 @@ Madde 282: Suçtan Kaynaklanan Malvarlığı Değerlerini Aklama, Madde 299: Cum
 6136 Sayılı Kanuna Muhalefet.
 `;
 
-const DOC_CONTAINER_STYLE = "border: 1.5px solid #000; width: 100%; font-family: 'Inter', sans-serif; color: #000; margin-bottom: 20px; background-color: #fff; display: flex; flex-direction: column; box-sizing: border-box; -webkit-font-smoothing: antialiased; translate: no;";
-const DOC_HEADER_STYLE = "border-bottom: 1.5px solid #000; padding: 12px 8px; text-align: center; background-color: #f3f4f6; font-weight: bold; font-size: 11pt; line-height: 1.3;";
-const DOC_ROW_STYLE = "display: flex; border-bottom: 1px solid #000; min-height: 44px; width: 100%; box-sizing: border-box;";
-const DOC_LABEL_STYLE = "width: 35%; min-width: 150px; padding: 12px 10px; font-size: 9pt; vertical-align: top; font-weight: 700; line-height: 1.5; border-right: 1px solid #000; background-color: #f9fafb; flex-shrink: 0; box-sizing: border-box;";
-const DOC_VALUE_STYLE = "flex: 1; padding: 12px 10px; font-size: 9pt; vertical-align: top; word-break: break-word; overflow-wrap: anywhere; line-height: 1.5; box-sizing: border-box;";
+const TABLE_STYLE = "border: 1.5px solid #000; border-collapse: collapse; width: 780px; min-width: 780px; max-width: 780px; font-family: 'Inter', sans-serif; color: #000; margin-bottom: 20px; background-color: #fff; table-layout: fixed; -webkit-text-size-adjust: none; text-size-adjust: none;";
+const TH_STYLE = "border: 1.5px solid #000; padding: 12px 10px; text-align: center; background-color: #f3f4f6; font-weight: bold; font-size: 11pt; line-height: 1.3;";
+const TD_LABEL_STYLE = "border: 1.5px solid #000; padding: 12px 10px; font-size: 9.5pt; width: 240px; min-width: 240px; max-width: 240px; vertical-align: top; font-weight: 700; line-height: 1.5; background-color: #f9fafb; white-space: nowrap; overflow: hidden;";
+const TD_VALUE_STYLE = "border: 1px solid #000; padding: 12px 10px; font-size: 9.5pt; vertical-align: top; word-break: break-word; overflow-wrap: break-word; line-height: 1.5; background-color: #fff;";
 const SIGNATURE_BLOCK_STYLE = "margin-top: 40px; display: flex; flex-direction: column; align-items: center; width: 300px; margin-left: auto; text-align: center; font-size: 9.5pt; line-height: 1.6; color: #000; -webkit-print-color-adjust: exact;";
 
 export const TEMPLATES = {
   gozalti: `
-    <div style="background-color: #fff; padding: 10px; position: relative;" translate="no" class="notranslate">
-      <div style="${DOC_CONTAINER_STYLE}">
-        <div style="${DOC_HEADER_STYLE}">T.C. İSTANBUL ANADOLU CUMHURİYET BAŞSAVCILIĞI</div>
-        <div style="${DOC_HEADER_STYLE}">GÖZALTI KARARI</div>
-        <div style="${DOC_ROW_STYLE}"><div style="${DOC_LABEL_STYLE}">İlgili Emniyet Birimi</div><div style="${DOC_VALUE_STYLE}">{{KARAKOL}}</div></div>
-        <div style="${DOC_ROW_STYLE}"><div style="${DOC_LABEL_STYLE}">Gözaltına Alınan Şüpheli(ler)in Kimliği</div><div style="${DOC_VALUE_STYLE}; white-space: pre-line;">{{SUPHELI_AD_KIMLIK}}</div></div>
-        <div style="${DOC_ROW_STYLE}"><div style="${DOC_LABEL_STYLE}">Yüklenen Suç</div><div style="${DOC_VALUE_STYLE}">{{SUC_ADI}}</div></div>
-        <div style="${DOC_ROW_STYLE}"><div style="${DOC_LABEL_STYLE}">Karar Tarihi</div><div style="${DOC_VALUE_STYLE}">{{KARAR_TARIHI}}</div></div>
-        <div style="${DOC_ROW_STYLE}"><div style="${DOC_LABEL_STYLE}">Gözaltına Alınma Sebebi</div><div style="${DOC_VALUE_STYLE}; text-align: justify;">Atılı suçu işlediği şüphesini gösteren somut delillerin varlığı, yüklenen suçun yasada öngörülen cezasının üst haddi, delilleri yok etme, gizleme veya değiştirme hususlarında kuvvetli şüphe sebeplerinin bulunması, soruşturmanın ikmali için gereken süre.</div></div>
-        <div style="${DOC_ROW_STYLE}; border-bottom: none;"><div style="${DOC_LABEL_STYLE}">Gözaltı süresi ile sürenin biteceği tarih ve saat</div><div style="${DOC_VALUE_STYLE}">Şüphelinin yakalama emri yerine en yakın hakim veya mahkemeye gönderilmesi için zorunlu süre hariç yakalama tarihi ve saatinden itibaren 1 gün süre ile gözaltına alınmasına</div></div>
-      </div>
+    <div style="background-color: #fff; padding: 15px; position: relative; width: 800px; min-width: 800px; max-width: 800px; box-sizing: border-box; -webkit-text-size-adjust: none; text-size-adjust: none;" translate="no" class="notranslate">
+      <table style="${TABLE_STYLE}">
+        <tr><th colspan="2" style="${TH_STYLE}">T.C. İSTANBUL ANADOLU CUMHURİYET BAŞSAVCILIĞI</th></tr>
+        <tr><th colspan="2" style="${TH_STYLE}">GÖZALTI KARARI</th></tr>
+        <tr><td style="${TD_LABEL_STYLE}">İlgili Emniyet Birimi</td><td style="${TD_VALUE_STYLE}">{{KARAKOL}}</td></tr>
+        <tr><td style="${TD_LABEL_STYLE}">Şüpheli(ler)in Kimliği</td><td style="${TD_VALUE_STYLE}; white-space: pre-line;">{{SUPHELI_AD_KIMLIK}}</td></tr>
+        <tr><td style="${TD_LABEL_STYLE}">Yüklenen Suç</td><td style="${TD_VALUE_STYLE}">{{SUC_ADI}}</td></tr>
+        <tr><td style="${TD_LABEL_STYLE}">Karar Tarihi</td><td style="${TD_VALUE_STYLE}">{{KARAR_TARIHI}}</td></tr>
+        <tr><td style="${TD_LABEL_STYLE}">Gözaltına Alınma Sebebi</td><td style="${TD_VALUE_STYLE}; text-align: justify;">Atılı suçu işlediği şüphesini gösteren somut delillerin varlığı, yüklenen suçun yasada öngörülen cezasının üst haddi, delilleri yok etme, gizleme veya değiştirme hususlarında kuvvetli şüphe sebeplerinin bulunması, soruşturmanın ikmali için gereken süre.</td></tr>
+        <tr><td style="${TD_LABEL_STYLE}">Gözaltı Süresi ve Bitiş</td><td style="${TD_VALUE_STYLE}">Şüphelinin yakalama emri yerine en yakın hakim veya mahkemeye gönderilmesi için zorunlu süre hariç yakalama tarihi ve saatinden itibaren 1 gün süre ile gözaltına alınmasına</td></tr>
+      </table>
       
       <div style="text-align: center; font-weight: bold; font-size: 10pt; margin-bottom: 12px; color: #000; margin-top: 15px;">İSTANBUL EMNİYET MÜDÜRLÜĞÜ</div>
-      <div style="font-size: 8.5pt; text-align: justify; line-height: 1.5; color: #000; padding: 0 5px;">
+      <div style="font-size: 8.5pt; text-align: justify; line-height: 1.5; color: #000; padding: 0 5px; width: 780px;">
         1-Atılı suçu işlediği şüphesini gösteren somut delillerin varlığı, yüklenen suçun yasada öngörülen cezasının üst haddi, kaçacağı şüphesini uyandıran somut olgular, delilleri yok etme, gizleme veya değiştirme hususlarında kuvvetli şüphe sebeplerinin bulunması, soruşturmanın ikmali için gereken süre nazara alınarak 5271 sayılı CMK'nun 91. maddesine göre yukarıda ismi yazılı şüpheli/şüphelilerin yakalandığı tarih ve saat itibarıyla 1 GÜN SÜRE İLE GÖZALTINA ALINMASINA/ ALINMALARI ARINA.<br>
         2-Gözaltı sürecinde bütün işlemlerin yürütülmesi ve gerek görülürse şüphelinin hakim önüne çıkarılması gerektiğinden. Cumhuriyet Başsavcılığımıza da yapılacak işlemler için makul bir zaman kalacak şekilde getirilmesi.<br>
         3-Üst sınırı 2 yıl veya daha fazla hapis cezasını gerektiren bir suçtan dolayı yürütülen soruşturma söz konusu ise şüpheli/şüphelilerin kimliğinin teşhisi için gerekli olması halinde 5271 sayılı CMK'nın 81. maddesi gereğince fotoğrafı, beden ölçüleri, parmak ve avuç içi izi, bedeninde yer almış olup teşhisini kolaylaştıracak diğer özellikleri ile sesi ve görüntülerinin kayda alınarak. soruşturma evrakına eklenmesi, ayrıca evrak kapsamında gerekli olması halinde PVSK’nın Ek-6. maddesindeki usule göre canlı teşhis işleminin şüphelinin mukavemet etmesi ve rıza göstermemesi durumunda.<br>
