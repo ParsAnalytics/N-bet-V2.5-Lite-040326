@@ -70,19 +70,19 @@ export const TEMPLATES = {
     </div>
   `,
   arama: `
-    <div style="background-color: #fff; padding: 10px; position: relative;" translate="no" class="notranslate">
-      <div style="${DOC_CONTAINER_STYLE}">
-        <div style="${DOC_HEADER_STYLE}">T.C. İSTANBUL ANADOLU CUMHURİYET BAŞSAVCILIĞI</div>
-        <div style="${DOC_HEADER_STYLE}">ARAMA VE EL KOYMA EMRİ</div>
-        <div style="${DOC_ROW_STYLE}"><div style="${DOC_LABEL_STYLE}">İlgili Emniyet Birimi</div><div style="${DOC_VALUE_STYLE}">{{KARAKOL}}</div></div>
-        <div style="${DOC_ROW_STYLE}"><div style="${DOC_LABEL_STYLE}">Hakkında karar verilen şüphelinin/şüphelilerin kimliği</div><div style="${DOC_VALUE_STYLE}; white-space: pre-line;">{{SUPHELI_AD_KIMLIK}}</div></div>
-        <div style="${DOC_ROW_STYLE}"><div style="${DOC_LABEL_STYLE}">Yüklenen Suç</div><div style="${DOC_VALUE_STYLE}">{{SUC_ADI}}</div></div>
-        <div style="${DOC_ROW_STYLE}"><div style="${DOC_LABEL_STYLE}">Karar Tarihi</div><div style="${DOC_VALUE_STYLE}">{{KARAR_TARIHI}}</div></div>
-        <div style="${DOC_ROW_STYLE}"><div style="${DOC_VALUE_STYLE}; text-align: justify; line-height: 1.5; padding: 15px;">Yukarıda kimlik bilgileri yer alan şüphelinin yakalanması ve/veya olayda kullandığı suç aletinin ele geçirilmesi için arama ve elkoyma emri talep edilmiş olmakla, hakim kararı alınmasının işlemleri geciktireceği ve gecikmenin de sakınca doğuracağı anlaşıldığından, CMK’nın 116 ve devamı maddeleri uyarınca kolluk kuvvetleri tarafından arama yapması ve emrin konusunu oluşturan ya da suç teşkil eden eşya bulunması halinde CMK’nın 127 ve devamı maddeleri gereğince elkoyulması, el koymanın 24 saat içerisinde CMK’nın 127/3 maddesi gereğince hakim onayına sunulması, derhal Cumhuriyet Başsavcılığımıza bilgi verilmesi ve arama-elkoyma işlemlerinde görev alanların ıslak imzalarını içerir belgelerin gönderilmesi rica olunur.<br>İş bu karar ıslak imzalı iki nüsha olarak düzenlenmiştir.</div></div>
-        <div style="${DOC_ROW_STYLE}"><div style="${DOC_LABEL_STYLE}">Aramanın yapılacağı yerin adresi ya da eşya</div><div style="${DOC_VALUE_STYLE}">{{ARANILACAK_ADRES}}</div></div>
-        <div style="${DOC_ROW_STYLE}"><div style="${DOC_LABEL_STYLE}">Aramanın Yapılacağı Tarih</div><div style="${DOC_VALUE_STYLE}">{{ARAMA_TARIHI}}</div></div>
-        <div style="${DOC_ROW_STYLE}; border-bottom: none;"><div style="${DOC_LABEL_STYLE}">Emrin geçerli olduğu saat dilimi</div><div style="${DOC_VALUE_STYLE}">{{ARAMA_BASLANGIC_SAATI}} - {{ARAMA_BITIS_SAATI}}</div></div>
-      </div>
+    <div style="background-color: #fff; padding: 15px; position: relative; width: 800px; min-width: 800px; max-width: 800px; box-sizing: border-box; -webkit-text-size-adjust: none; text-size-adjust: none;" translate="no" class="notranslate">
+      <table style="${TABLE_STYLE}">
+        <tr><th colspan="2" style="${TH_STYLE}">T.C. İSTANBUL ANADOLU CUMHURİYET BAŞSAVCILIĞI</th></tr>
+        <tr><th colspan="2" style="${TH_STYLE}">ARAMA VE EL KOYMA EMRİ</th></tr>
+        <tr><td style="${TD_LABEL_STYLE}">İlgili Emniyet Birimi</td><td style="${TD_VALUE_STYLE}">{{KARAKOL}}</td></tr>
+        <tr><td style="${TD_LABEL_STYLE}">Şüpheli(ler)in Kimliği</td><td style="${TD_VALUE_STYLE}; white-space: pre-line;">{{SUPHELI_AD_KIMLIK}}</td></tr>
+        <tr><td style="${TD_LABEL_STYLE}">Yüklenen Suç</td><td style="${TD_VALUE_STYLE}">{{SUC_ADI}}</td></tr>
+        <tr><td style="${TD_LABEL_STYLE}">Karar Tarihi</td><td style="${TD_VALUE_STYLE}">{{KARAR_TARIHI}}</td></tr>
+        <tr><td colspan="2" style="${TD_VALUE_STYLE}; text-align: justify; line-height: 1.5; padding: 15px;">Yukarıda kimlik bilgileri yer alan şüphelinin yakalanması ve/veya olayda kullandığı suç aletinin ele geçirilmesi için arama ve elkoyma emri talep edilmiş olmakla, hakim kararı alınmasının işlemleri geciktireceği ve gecikmenin de sakınca doğuracağı anlaşıldığından, CMK’nın 116 ve devamı maddeleri uyarınca kolluk kuvvetleri tarafından arama yapması ve emrin konusunu oluşturan ya da suç teşkil eden eşya bulunması halinde CMK’nın 127 ve devamı maddeleri gereğince elkoyulması, el koymanın 24 saat içerisinde CMK’nın 127/3 maddesi gereğince hakim onayına sunulması, derhal Cumhuriyet Başsavcılığımıza bilgi verilmesi ve arama-elkoyma işlemlerinde görev alanların ıslak imzalarını içerir belgelerin gönderilmesi rica olunur.<br>İş bu karar ıslak imzalı iki nüsha olarak düzenlenmiştir.</td></tr>
+        <tr><td style="${TD_LABEL_STYLE}">Arama Adresi / Eşya</td><td style="${TD_VALUE_STYLE}">{{ARANILACAK_ADRES}}</td></tr>
+        <tr><td style="${TD_LABEL_STYLE}">Arama Tarihi</td><td style="${TD_VALUE_STYLE}">{{ARAMA_TARIHI}}</td></tr>
+        <tr><td style="${TD_LABEL_STYLE}">Saat Dilimi</td><td style="${TD_VALUE_STYLE}">{{ARAMA_BASLANGIC_SAATI}} - {{ARAMA_BITIS_SAATI}}</td></tr>
+      </table>
 
       <div style="${SIGNATURE_BLOCK_STYLE}">
         <div style="font-weight: bold;">{{SAVCI_ADI}}</div>
@@ -93,16 +93,16 @@ export const TEMPLATES = {
     </div>
   `,
   kan: `
-    <div style="background-color: #fff; padding: 10px; position: relative;" translate="no" class="notranslate">
-      <div style="${DOC_CONTAINER_STYLE}">
-        <div style="${DOC_HEADER_STYLE}">T.C. İSTANBUL ANADOLU CUMHURİYET BAŞSAVCILIĞI</div>
-        <div style="${DOC_HEADER_STYLE}">BEDEN MUAYENESİ VE VÜCUTTAN ÖRNEK ALINMASI KARARI (CMK 75. VE 76. MADDELERİ UYARINCA)</div>
-        <div style="${DOC_ROW_STYLE}"><div style="${DOC_LABEL_STYLE}">İlgili emniyet birimi</div><div style="${DOC_VALUE_STYLE}">{{KARAKOL}}</div></div>
-        <div style="${DOC_ROW_STYLE}"><div style="${DOC_LABEL_STYLE}">Hakkında karar verilen şüphelinin/şüphelilerin kimliği</div><div style="${DOC_VALUE_STYLE}; white-space: pre-line;">{{SUPHELI_AD_KIMLIK}}</div></div>
-        <div style="${DOC_ROW_STYLE}"><div style="${DOC_LABEL_STYLE}">Yüklenen Suç</div><div style="${DOC_VALUE_STYLE}">{{SUC_ADI}}</div></div>
-        <div style="${DOC_ROW_STYLE}"><div style="${DOC_LABEL_STYLE}">Karar Tarihi</div><div style="${DOC_VALUE_STYLE}">{{KARAR_TARIHI}}</div></div>
-        <div style="${DOC_ROW_STYLE}; border-bottom: none;"><div style="${DOC_VALUE_STYLE}; text-align: justify; line-height: 1.5; padding: 15px;">Yukarıda belirtilen suça yönelik olarak Cumhuriyet Başsavcılığımızca başlatılan soruşturma kapsamında; mesai saatleri dışında olunması ve mesai saati beklenerek hakim kararının talep edilmesi halinde soruşturmaya konu suça ilişkin delillerin kaybolma ihtimalinin bulunması hususları birlikte değerlendirildiğinde, gecikmesinde sakınca bulunan hal bulunmakla; CMK 75. maddesi uyarınca şüpheli / CMK 76. maddesi uyarınca yukarıda kimlik bilgileri belirtilen şahsın vücudundan kan, idrar vb. biyolojik örnekler alınmasına / iç beden muayenesi yapılmasına ve kararımızın yirmidört saat içinde hakim onayına sunulmasına karar verilmiştir.<br>İş bu karar ıslak imzalı iki nüsha olarak düzenlenmiştir.</div></div>
-      </div>
+    <div style="background-color: #fff; padding: 15px; position: relative; width: 800px; min-width: 800px; max-width: 800px; box-sizing: border-box; -webkit-text-size-adjust: none; text-size-adjust: none;" translate="no" class="notranslate">
+      <table style="${TABLE_STYLE}">
+        <tr><th colspan="2" style="${TH_STYLE}">T.C. İSTANBUL ANADOLU CUMHURİYET BAŞSAVCILIĞI</th></tr>
+        <tr><th colspan="2" style="${TH_STYLE}">BEDEN MUAYENESİ VE VÜCUTTAN ÖRNEK ALINMASI KARARI</th></tr>
+        <tr><td style="${TD_LABEL_STYLE}">İlgili Emniyet Birimi</td><td style="${TD_VALUE_STYLE}">{{KARAKOL}}</td></tr>
+        <tr><td style="${TD_LABEL_STYLE}">Şüpheli(ler)in Kimliği</td><td style="${TD_VALUE_STYLE}; white-space: pre-line;">{{SUPHELI_AD_KIMLIK}}</td></tr>
+        <tr><td style="${TD_LABEL_STYLE}">Yüklenen Suç</td><td style="${TD_VALUE_STYLE}">{{SUC_ADI}}</td></tr>
+        <tr><td style="${TD_LABEL_STYLE}">Karar Tarihi</td><td style="${TD_VALUE_STYLE}">{{KARAR_TARIHI}}</td></tr>
+        <tr><td colspan="2" style="${TD_VALUE_STYLE}; text-align: justify; line-height: 1.5; padding: 15px;">Yukarıda belirtilen suça yönelik olarak Cumhuriyet Başsavcılığımızca başlatılan soruşturma kapsamında; mesai saatleri dışında olunması ve mesai saati beklenerek hakim kararının talep edilmesi halinde soruşturmaya konu suça ilişkin delillerin kaybolma ihtimalinin bulunması hususları birlikte değerlendirildiğinde, gecikmesinde sakınca bulunan hal bulunmakla; CMK 75. maddesi uyarınca şüpheli / CMK 76. maddesi uyarınca yukarıda kimlik bilgileri belirtilen şahsın vücudundan kan, idrar vb. biyolojik örnekler alınmasına / iç beden muayenesi yapılmasına ve kararımızın yirmidört saat içinde hakim onayına sunulmasına karar verilmiştir.<br>İş bu karar ıslak imzalı iki nüsha olarak düzenlenmiştir.</td></tr>
+      </table>
 
       <div style="${SIGNATURE_BLOCK_STYLE}">
         <div style="font-weight: bold;">{{SAVCI_ADI}}</div>
@@ -113,16 +113,16 @@ export const TEMPLATES = {
     </div>
   `,
   telefon: `
-    <div style="background-color: #fff; padding: 10px; position: relative;" translate="no" class="notranslate">
-      <div style="${DOC_CONTAINER_STYLE}">
-        <div style="${DOC_HEADER_STYLE}">T.C. İSTANBUL ANADOLU CUMHURİYET BAŞSAVCILIĞI</div>
-        <div style="${DOC_HEADER_STYLE}">BİLGİSAYAR, CEP TELEFONU, TABLET VE BENZERİ EŞYALAR ÜZERİNDE İNCELEME KARARI (CMK 134. MADDESİ UYARINCA)</div>
-        <div style="${DOC_ROW_STYLE}"><div style="${DOC_LABEL_STYLE}">İlgili emniyet birimi</div><div style="${DOC_VALUE_STYLE}">{{KARAKOL}}</div></div>
-        <div style="${DOC_ROW_STYLE}"><div style="${DOC_LABEL_STYLE}">Hakkında karar verilen şüphelinin/şüphelilerin kimliği</div><div style="${DOC_VALUE_STYLE}; white-space: pre-line;">{{SUPHELI_AD_KIMLIK}}</div></div>
-        <div style="${DOC_ROW_STYLE}"><div style="${DOC_LABEL_STYLE}">Yüklenen Suç</div><div style="${DOC_VALUE_STYLE}">{{SUC_ADI}}</div></div>
-        <div style="${DOC_ROW_STYLE}"><div style="${DOC_LABEL_STYLE}">Karar Tarihi</div><div style="${DOC_VALUE_STYLE}">{{KARAR_TARIHI}}</div></div>
-        <div style="${DOC_ROW_STYLE}; border-bottom: none;"><div style="${DOC_VALUE_STYLE}; text-align: justify; line-height: 1.5; padding: 15px;">Şüpheli/şüphelilere ait cep telefonu, tablet ve benzeri bilgisayar niteliğindeki eşyalar üzerinde 5271 sayılı CMK’nın 134/1. maddesi gereğince gecikmesinde sakınca bulunan hal kapsamında arama yapılmasına, kayıtlarından kopya çıkarılmasına ve bu kayıtların çözülerek metin haline getirilmesine karar verildi. Kararımızın yine CMK 134. maddesi uyarınca 24 saat içerisinde hakim onayına sunulması hususunda gereği rica olunur.<br>İş bu karar ıslak imzalı iki nüsha olarak düzenlenmiştir.</div></div>
-      </div>
+    <div style="background-color: #fff; padding: 15px; position: relative; width: 800px; min-width: 800px; max-width: 800px; box-sizing: border-box; -webkit-text-size-adjust: none; text-size-adjust: none;" translate="no" class="notranslate">
+      <table style="${TABLE_STYLE}">
+        <tr><th colspan="2" style="${TH_STYLE}">T.C. İSTANBUL ANADOLU CUMHURİYET BAŞSAVCILIĞI</th></tr>
+        <tr><th colspan="2" style="${TH_STYLE}">BİLGİSAYAR, CEP TELEFONU, TABLET İNCELEME KARARI</th></tr>
+        <tr><td style="${TD_LABEL_STYLE}">İlgili Emniyet Birimi</td><td style="${TD_VALUE_STYLE}">{{KARAKOL}}</td></tr>
+        <tr><td style="${TD_LABEL_STYLE}">Şüpheli(ler)in Kimliği</td><td style="${TD_VALUE_STYLE}; white-space: pre-line;">{{SUPHELI_AD_KIMLIK}}</td></tr>
+        <tr><td style="${TD_LABEL_STYLE}">Yüklenen Suç</td><td style="${TD_VALUE_STYLE}">{{SUC_ADI}}</td></tr>
+        <tr><td style="${TD_LABEL_STYLE}">Karar Tarihi</td><td style="${TD_VALUE_STYLE}">{{KARAR_TARIHI}}</td></tr>
+        <tr><td colspan="2" style="${TD_VALUE_STYLE}; text-align: justify; line-height: 1.5; padding: 15px;">Şüpheli/şüphelilere ait cep telefonu, tablet ve benzeri bilgisayar niteliğindeki eşyalar üzerinde 5271 sayılı CMK’nın 134/1. maddesi gereğince gecikmesinde sakınca bulunan hal kapsamında arama yapılmasına, kayıtlarından kopya çıkarılmasına ve bu kayıtların çözülerek metin haline getirilmesine karar verildi. Kararımızın yine CMK 134. maddesi uyarınca 24 saat içerisinde hakim onayına sunulması hususunda gereği rica olunur.<br>İş bu karar ıslak imzalı iki nüsha olarak düzenlenmiştir.</td></tr>
+      </table>
 
       <div style="${SIGNATURE_BLOCK_STYLE}">
         <div style="font-weight: bold;">{{SAVCI_ADI}}</div>
